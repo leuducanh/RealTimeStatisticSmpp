@@ -1,5 +1,8 @@
-viettel/statistic_smpp/util/Protocol.class
-viettel/statistic_smpp/App.class
-viettel/statistic_smpp/broker/Broker.class
-viettel/statistic_smpp/work/Worker.class
-viettel/statistic_smpp/client/Client.class
+viettel\statistic_smpp\broker\Broker.class
+viettel\statistic_smpp\broker\model\WorkerInformation.class
+viettel\statistic_smpp\App.class
+viettel\statistic_smpp\util\PropertyConfiguration.class
+viettel\statistic_smpp\client\Client.class
+viettel\statistic_smpp\work\Worker.class
+viettel\statistic_smpp\broker\WorkerManager.class
+viettel\statistic_smpp\util\Protocol.class

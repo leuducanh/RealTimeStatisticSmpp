@@ -3,6 +3,7 @@ package viettel.statistic_smpp.broker;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.zeromq.*;
+import viettel.statistic_smpp.util.Protocol;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -19,8 +20,6 @@ public class Broker {
     private long heartbeatAt;
     private ExecutorService threadPool = Executors.newFixedThreadPool(4);
     Logger logger =  LogManager.getLogger(Broker.class);
-
-//
 
     public Broker(String brokerAddressString) {
         this.brokerAddressString = brokerAddressString;
@@ -40,11 +39,24 @@ public class Broker {
                 break; // Interrupted
             ZMsg zMsg = new ZMsg();
             if (items.pollin(0)) {
+                ZMsg msg = ZMsg.recvMsg(socketBroker);
+                logger.debug(msg != null ? msg.toString() : "null");
 
-//                System.out.println(msg != null ? msg.toString() : "null");
+                if(msg != null) {
+                    ZFrame address = msg.unwrap();
+                    ZFrame header = msg.pop();
+                    ZFrame serviceName = msg.pop();
+
+                    if(header.equals(Protocol.CLIENT)) {
+
+                    } else if(header.equals(Protocol.WORKER)) {
+
+                    }
+                }
+
                 if (clientAddress == null) {
 
-                    ZMsg msg = ZMsg.recvMsg(socketBroker);
+
                     if (msg != null) {
                         System.out.println("tin den");
                         clientAddress = msg.unwrap();

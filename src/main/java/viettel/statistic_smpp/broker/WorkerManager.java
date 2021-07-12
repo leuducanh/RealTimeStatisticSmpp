@@ -13,17 +13,45 @@ public class WorkerManager {
 
     public WorkerManager() {
         this.workerInformationList = new ArrayList<>();
+        reentrantLock = new ReentrantLock(true);
     }
 
     private void add(WorkerInformation workerInformation) {
-        workerInformationList.add(workerInformation);
+        boolean tryLockSuccess = reentrantLock.tryLock();
+        try {
+            if (tryLockSuccess) {
+                reentrantLock.lock();
+                workerInformationList.add(workerInformation);
+            }
+        } finally {
+            reentrantLock.unlock();
+        }
     }
 
     private void remove(int pos) {
-        workerInformationList.remove(pos);
+        boolean tryLockSuccess = reentrantLock.tryLock();
+        try {
+            if (tryLockSuccess) {
+                reentrantLock.lock();
+                workerInformationList.remove(pos);
+            }
+        } finally {
+            reentrantLock.unlock();
+        }
     }
 
     private WorkerInformation get(int pos) {
-        workerInformationList.get(pos);
+        boolean tryLockSuccess = reentrantLock.tryLock();
+        WorkerInformation workerInformation = null;
+        try {
+            if (tryLockSuccess) {
+                reentrantLock.lock();
+                return workerInformation = workerInformationList.get(pos);
+            }
+        } finally {
+            reentrantLock.unlock();
+        }
+
+        return null;
     }
 }
