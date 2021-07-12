@@ -21,7 +21,6 @@ public class Broker {
     }
 
     public void middleManDancing() {
-
         int i = 0;
         ZMQ.Poller items = ctx.getContext().poller(1);
         items.register(socketBroker, ZMQ.Poller.POLLIN);
