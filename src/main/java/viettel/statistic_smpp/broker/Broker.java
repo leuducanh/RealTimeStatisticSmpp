@@ -1,6 +1,11 @@
 package viettel.statistic_smpp.broker;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.zeromq.*;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Broker {
     private static final int    HEARTBEAT_LIVENESS      = 3;
@@ -12,6 +17,10 @@ public class Broker {
     private ZMQ.Socket socketBroker;
 
     private long heartbeatAt;
+    private ExecutorService threadPool = Executors.newFixedThreadPool(4);
+    Logger logger =  LogManager.getLogger(Broker.class);
+
+//
 
     public Broker(String brokerAddressString) {
         this.brokerAddressString = brokerAddressString;
@@ -26,41 +35,39 @@ public class Broker {
         items.register(socketBroker, ZMQ.Poller.POLLIN);
 
         ZFrame clientAddress = null;
-        while(true) {
+        while (true) {
             if (items.poll(HEARTBEAT_INTERVAL) == -1)
                 break; // Interrupted
             ZMsg zMsg = new ZMsg();
-//            if (items.pollin(0)) {
-
+            if (items.pollin(0)) {
 
 //                System.out.println(msg != null ? msg.toString() : "null");
-            if(clientAddress == null) {
+                if (clientAddress == null) {
 
-                ZMsg msg = ZMsg.recvMsg(socketBroker);
-                if(msg != null) {
-                    System.out.println("tin den");
-                    clientAddress = msg.unwrap();
+                    ZMsg msg = ZMsg.recvMsg(socketBroker);
+                    if (msg != null) {
+                        System.out.println("tin den");
+                        clientAddress = msg.unwrap();
+                    }
+                } else {
+                    i++;
+                    System.out.println("address " + clientAddress.toString());
+
+                    zMsg.addFirst(new ZFrame("" + i));
+                    zMsg.addFirst(new byte[0]);
+                    zMsg.addFirst(clientAddress.duplicate());
+                    zMsg.send(socketBroker);
                 }
-            }else{
-                i++;
-                System.out.println("address " +clientAddress.toString());
-
-                zMsg.addFirst(new ZFrame("" + i ));
-                zMsg.addFirst(new byte[0]);
-                zMsg.addFirst(clientAddress.duplicate());
-                zMsg.send(socketBroker);
-            }
 
 //            }
 
+
+            }
 
         }
 
     }
 
-    public static void main(String[] args) {
-        Broker broker = new Broker("tcp://*:5555");
-        broker.middleManDancing();
-    }
+
 
 }
