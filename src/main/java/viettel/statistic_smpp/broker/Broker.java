@@ -3,8 +3,13 @@ package viettel.statistic_smpp.broker;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.zeromq.*;
+import viettel.statistic_smpp.broker.model.WorkerInformation;
 import viettel.statistic_smpp.util.Protocol;
+import viettel.statistic_smpp.work.Worker;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -21,11 +26,15 @@ public class Broker {
     private ExecutorService threadPool = Executors.newFixedThreadPool(4);
     Logger logger =  LogManager.getLogger(Broker.class);
 
+    private ConcurrentHashMap<String, List<WorkerInformation>> serviceNameToWorkerInformationList;
+
     public Broker(String brokerAddressString) {
         this.brokerAddressString = brokerAddressString;
         this.ctx = new ZContext();
         this.socketBroker = ctx.createSocket(SocketType.ROUTER.type());
         this.socketBroker.bind(brokerAddressString);
+
+        serviceNameToWorkerInformationList = new ConcurrentHashMap<>();
     }
 
     public void middleManDancing() {
@@ -43,14 +52,14 @@ public class Broker {
                 logger.debug(msg != null ? msg.toString() : "null");
 
                 if(msg != null) {
-                    ZFrame address = msg.unwrap();
+                    ZFrame senderAddress = msg.unwrap();
                     ZFrame header = msg.pop();
-                    ZFrame serviceName = msg.pop();
+//                    ZFrame serviceName = msg.pop();
 
                     if(header.equals(Protocol.CLIENT)) {
-
+                        processClientRequest(senderAddress, zMsg);
                     } else if(header.equals(Protocol.WORKER)) {
-
+                        processWorkerRequest(senderAddress, zMsg);
                     }
                 }
 
@@ -80,6 +89,33 @@ public class Broker {
 
     }
 
+    private void processWorkerRequest(ZFrame senderAddress, ZMsg zMsg) {
+        ZFrame command = zMsg.pop();
+
+        if(command.equals(Protocol.REGISTER)) {
+            String serviceName = zMsg.pop().toString();
+            List<WorkerInformation> existWorkerInformationList = serviceNameToWorkerInformationList.get(serviceName);
+
+            WorkerInformation newRegisterWorkerInformation = new WorkerInformation(senderAddress);
+            if(existWorkerInformationList == null) {
+                List<WorkerInformation> workerInformationList = new ArrayList<>();
+
+                workerInformationList.add(newRegisterWorkerInformation);
+            } else{
+                existWorkerInformationList.add(newRegisterWorkerInformation);
+            }
+
+            rebalanceWhenNewWorkerRegister(newRegisterWorkerInformation);
+        }
+    }
+
+    private void rebalanceWhenNewWorkerRegister(WorkerInformation newRegisterWorkerInformation) {
+        sendSyncMessageToNewRegisterWorker();
+    }
+
+    private void processClientRequest(ZFrame senderAddress, ZMsg zMsg) {
+
+    }
 
 
 }

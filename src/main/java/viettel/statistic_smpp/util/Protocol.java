@@ -3,7 +3,7 @@ package viettel.statistic_smpp.util;
 import org.zeromq.ZFrame;
 
 public enum Protocol {
-     CLIENT("CLIENT"), WORKER("WORKER"), REQUEST("REQUEST"), REP("REP");
+     CLIENT("CLIENT"), WORKER("WORKER"), REGISTER("REGISTER");
 
     String value;
 
