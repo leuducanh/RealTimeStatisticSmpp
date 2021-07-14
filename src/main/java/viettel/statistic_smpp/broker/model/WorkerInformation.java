@@ -7,6 +7,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class WorkerInformation {
     public ZFrame workerAddress;
     public boolean isExactlyWorker = false;
+    public int position;
 
     public WorkerInformation(ZFrame workerAddress) {
         this.workerAddress = workerAddress;

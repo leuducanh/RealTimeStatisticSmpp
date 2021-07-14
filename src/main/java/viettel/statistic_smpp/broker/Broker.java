@@ -4,14 +4,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.zeromq.*;
 import viettel.statistic_smpp.broker.model.WorkerInformation;
+import viettel.statistic_smpp.broker.util.BrokerConstant;
 import viettel.statistic_smpp.util.Protocol;
-import viettel.statistic_smpp.work.Worker;
 
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 public class Broker {
     private static final int    HEARTBEAT_LIVENESS      = 3;
@@ -27,6 +26,14 @@ public class Broker {
     Logger logger =  LogManager.getLogger(Broker.class);
 
     private ConcurrentHashMap<String, List<WorkerInformation>> serviceNameToWorkerInformationList;
+    private ConcurrentHashMap<String, Integer> serviceNameToPriorityType;
+
+    private volatile BitSet waitSyncDataToRedisResponseFromOldWorker;
+
+    private BlockingQueue<ZMsg> eventWaitingForBalanceQueue = new LinkedBlockingQueue<>();
+
+    private int state = BrokerConstant.INIT;
+
 
     public Broker(String brokerAddressString) {
         this.brokerAddressString = brokerAddressString;
@@ -35,6 +42,9 @@ public class Broker {
         this.socketBroker.bind(brokerAddressString);
 
         serviceNameToWorkerInformationList = new ConcurrentHashMap<>();
+        serviceNameToPriorityType = new ConcurrentHashMap<>();
+
+        state = BrokerConstant.RUNNING;
     }
 
     public void middleManDancing() {
@@ -45,7 +55,7 @@ public class Broker {
         ZFrame clientAddress = null;
         while (true) {
             if (items.poll(HEARTBEAT_INTERVAL) == -1)
-                break; // Interrupted
+                break;
             ZMsg zMsg = new ZMsg();
             if (items.pollin(0)) {
                 ZMsg msg = ZMsg.recvMsg(socketBroker);
@@ -81,37 +91,57 @@ public class Broker {
                 }
 
 //            }
-
-
             }
-
         }
-
     }
 
     private void processWorkerRequest(ZFrame senderAddress, ZMsg zMsg) {
         ZFrame command = zMsg.pop();
 
         if(command.equals(Protocol.REGISTER)) {
-            String serviceName = zMsg.pop().toString();
-            List<WorkerInformation> existWorkerInformationList = serviceNameToWorkerInformationList.get(serviceName);
+           try {
+               // lấy thông tin về yêu cầu độ chính xác của job.
+               ZFrame priorityFrame = zMsg.pop();
+               int priority = Integer.parseInt(priorityFrame.toString());
+               String serviceName = zMsg.pop().toString();
+               List<WorkerInformation> existWorkerInformationList = serviceNameToWorkerInformationList.get(serviceName);
 
-            WorkerInformation newRegisterWorkerInformation = new WorkerInformation(senderAddress);
-            if(existWorkerInformationList == null) {
-                List<WorkerInformation> workerInformationList = new ArrayList<>();
+               // cho worker vào danh sách
+               WorkerInformation newRegisterWorkerInformation = new WorkerInformation(senderAddress);
+               if(existWorkerInformationList == null) {
+                   List<WorkerInformation> workerInformationList = new ArrayList<>();
 
-                workerInformationList.add(newRegisterWorkerInformation);
-            } else{
-                existWorkerInformationList.add(newRegisterWorkerInformation);
-            }
+                   workerInformationList.add(newRegisterWorkerInformation);
+                   serviceNameToPriorityType.put(serviceName, priority);
+                   serviceNameToWorkerInformationList.put(serviceName,workerInformationList);
+                   newRegisterWorkerInformation.position = 0;
+               } else{
+                   newRegisterWorkerInformation.position = existWorkerInformationList.size();
+                   existWorkerInformationList.add(newRegisterWorkerInformation);
+                   rebalancedWhenNewWorkerRegister(newRegisterWorkerInformation, serviceName);
+               }
 
-            rebalanceWhenNewWorkerRegister(newRegisterWorkerInformation);
+           }catch (Exception e) {
+
+           }
+
         }
     }
 
-    private void rebalanceWhenNewWorkerRegister(WorkerInformation newRegisterWorkerInformation) {
-        sendSyncMessageToNewRegisterWorker();
+    private void rebalancedWhenNewWorkerRegister(WorkerInformation newRegisterWorkerInformation, String serviceName) {
+        sendSyncCurrentDataToRedis(serviceName);
     }
+
+    private void sendSyncCurrentDataToRedis(String serviceName) {
+        List<WorkerInformation> workerInformationList = serviceNameToWorkerInformationList.get(serviceName);
+        waitSyncDataToRedisResponseFromOldWorker = new BitSet(workerInformationList.size() - 1);
+
+        for(WorkerInformation workerInformation : workerInformationList) {
+
+        }
+    }
+
+
 
     private void processClientRequest(ZFrame senderAddress, ZMsg zMsg) {
 
