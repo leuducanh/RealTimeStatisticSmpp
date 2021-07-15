@@ -4,7 +4,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.zeromq.*;
 import viettel.statistic_smpp.broker.model.WorkerInformation;
+import viettel.statistic_smpp.broker.model.builder.BrokerMessageBuilder;
 import viettel.statistic_smpp.broker.util.BrokerConstant;
+import viettel.statistic_smpp.util.Constants;
 import viettel.statistic_smpp.util.Protocol;
 
 import java.util.ArrayList;
@@ -22,7 +24,7 @@ public class Broker {
     private ZMQ.Socket socketBroker;
 
     private long heartbeatAt;
-    private ExecutorService threadPool = Executors.newFixedThreadPool(4);
+    private ExecutorService threadPool = Executors.newFixedThreadPool(1);
     Logger logger =  LogManager.getLogger(Broker.class);
 
     private ConcurrentHashMap<String, List<WorkerInformation>> serviceNameToWorkerInformationList;
@@ -33,6 +35,14 @@ public class Broker {
     private BlockingQueue<ZMsg> eventWaitingForBalanceQueue = new LinkedBlockingQueue<>();
 
     private int state = BrokerConstant.INIT;
+
+    private static final long TIMEOUT_WAIT_RESEND_SYNC_DATA_STORAGE = 5 * Constants.MINUTE;
+    private static final long MAX_TIME_RESEND_SYNC_DATA_STORAGE = 1;
+
+    private static final long TIMEOUT_WAIT_RESEND_WAITING_BALANCE = 5 * Constants.MINUTE;
+    private static final long MAX_TIME_RESEND_WAITING_BALANCE = 5 * Constants.MINUTE;
+
+
 
 
     public Broker(String brokerAddressString) {
@@ -73,22 +83,22 @@ public class Broker {
                     }
                 }
 
-                if (clientAddress == null) {
-
-
-                    if (msg != null) {
-                        System.out.println("tin den");
-                        clientAddress = msg.unwrap();
-                    }
-                } else {
-                    i++;
-                    System.out.println("address " + clientAddress.toString());
-
-                    zMsg.addFirst(new ZFrame("" + i));
-                    zMsg.addFirst(new byte[0]);
-                    zMsg.addFirst(clientAddress.duplicate());
-                    zMsg.send(socketBroker);
-                }
+//                if (clientAddress == null) {
+//
+//
+//                    if (msg != null) {
+//                        System.out.println("tin den");
+//                        clientAddress = msg.unwrap();
+//                    }
+//                } else {
+//                    i++;
+//                    System.out.println("address " + clientAddress.toString());
+//
+//                    zMsg.addFirst(new ZFrame("" + i));
+//                    zMsg.addFirst(new byte[0]);
+//                    zMsg.addFirst(clientAddress.duplicate());
+//                    zMsg.send(socketBroker);
+//                }
 
 //            }
             }
@@ -116,28 +126,49 @@ public class Broker {
                    serviceNameToWorkerInformationList.put(serviceName,workerInformationList);
                    newRegisterWorkerInformation.position = 0;
                } else{
+                   sendSyncCurrentDataToStorage(serviceName);
+
                    newRegisterWorkerInformation.position = existWorkerInformationList.size();
                    existWorkerInformationList.add(newRegisterWorkerInformation);
-                   rebalancedWhenNewWorkerRegister(newRegisterWorkerInformation, serviceName);
                }
 
            }catch (Exception e) {
 
            }
+        } else if(command.equals(Protocol.SYNC_DATA_TO_STORAGE_RESPONSE)) {
 
+            if(state != BrokerConstant.WAITING_SYNC_DATA_TO_STORAGE) {
+                return;
+            }
+
+            ZFrame result = zMsg.pop();
+
+            if(result.equals(Protocol.OK)) {
+
+
+            } else if(result.equals(Protocol.ERROR)) {
+
+
+            }
         }
     }
 
-    private void rebalancedWhenNewWorkerRegister(WorkerInformation newRegisterWorkerInformation, String serviceName) {
-        sendSyncCurrentDataToRedis(serviceName);
-    }
 
-    private void sendSyncCurrentDataToRedis(String serviceName) {
+
+    private void sendSyncCurrentDataToStorage(String serviceName) {
+        state = BrokerConstant.WAITING_SYNC_DATA_TO_STORAGE;
         List<WorkerInformation> workerInformationList = serviceNameToWorkerInformationList.get(serviceName);
         waitSyncDataToRedisResponseFromOldWorker = new BitSet(workerInformationList.size() - 1);
 
         for(WorkerInformation workerInformation : workerInformationList) {
+            ZMsg zMsg = BrokerMessageBuilder.builder()
+                    .toReceiverAddress(workerInformation.workerAddress.duplicate())
+                    .command(Protocol.SYNC_DATA_TO_STORAGE.newFrame())
+                    .build();
+            zMsg.send(socketBroker);
 
+            // set list bit to true
+            waitSyncDataToRedisResponseFromOldWorker.set(workerInformation.position, true);
         }
     }
 
@@ -146,6 +177,8 @@ public class Broker {
     private void processClientRequest(ZFrame senderAddress, ZMsg zMsg) {
 
     }
+
+    public class
 
 
 }
