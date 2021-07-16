@@ -27,12 +27,11 @@ public class Broker {
     private ExecutorService threadPool = Executors.newFixedThreadPool(1);
     Logger logger =  LogManager.getLogger(Broker.class);
 
-    private ConcurrentHashMap<String, List<WorkerInformation>> serviceNameToWorkerInformationList;
-    private ConcurrentHashMap<String, Integer> serviceNameToPriorityType;
+    private ConcurrentHashMap<String, List<WorkerInformation>> serviceTypeToWorkerInformationList;
 
     private volatile BitSet waitSyncDataToRedisResponseFromOldWorker;
 
-    private BlockingQueue<ZMsg> eventWaitingForBalanceQueue = new LinkedBlockingQueue<>();
+//    private BlockingQueue<ZMsg> eventWaitingForBalanceQueue = new LinkedBlockingQueue<>();
 
     private int state = BrokerConstant.INIT;
 
@@ -42,19 +41,16 @@ public class Broker {
     private static final long TIMEOUT_WAIT_RESEND_WAITING_BALANCE = 5 * Constants.MINUTE;
     private static final long MAX_TIME_RESEND_WAITING_BALANCE = 5 * Constants.MINUTE;
 
-
-
-
     public Broker(String brokerAddressString) {
         this.brokerAddressString = brokerAddressString;
         this.ctx = new ZContext();
         this.socketBroker = ctx.createSocket(SocketType.ROUTER.type());
         this.socketBroker.bind(brokerAddressString);
 
-        serviceNameToWorkerInformationList = new ConcurrentHashMap<>();
-        serviceNameToPriorityType = new ConcurrentHashMap<>();
-
+        serviceTypeToWorkerInformationList = new ConcurrentHashMap<>();
         state = BrokerConstant.RUNNING;
+
+
     }
 
     public void middleManDancing() {
@@ -62,7 +58,6 @@ public class Broker {
         ZMQ.Poller items = ctx.getContext().poller(1);
         items.register(socketBroker, ZMQ.Poller.POLLIN);
 
-        ZFrame clientAddress = null;
         while (true) {
             if (items.poll(HEARTBEAT_INTERVAL) == -1)
                 break;
@@ -111,10 +106,8 @@ public class Broker {
         if(command.equals(Protocol.REGISTER)) {
            try {
                // lấy thông tin về yêu cầu độ chính xác của job.
-               ZFrame priorityFrame = zMsg.pop();
-               int priority = Integer.parseInt(priorityFrame.toString());
-               String serviceName = zMsg.pop().toString();
-               List<WorkerInformation> existWorkerInformationList = serviceNameToWorkerInformationList.get(serviceName);
+               String serviceType = zMsg.pop().toString();
+               List<WorkerInformation> existWorkerInformationList = serviceTypeToWorkerInformationList.get(serviceType);
 
                // cho worker vào danh sách
                WorkerInformation newRegisterWorkerInformation = new WorkerInformation(senderAddress);
@@ -122,11 +115,13 @@ public class Broker {
                    List<WorkerInformation> workerInformationList = new ArrayList<>();
 
                    workerInformationList.add(newRegisterWorkerInformation);
-                   serviceNameToPriorityType.put(serviceName, priority);
-                   serviceNameToWorkerInformationList.put(serviceName,workerInformationList);
+                   serviceTypeToWorkerInformationList.put(serviceType,workerInformationList);
                    newRegisterWorkerInformation.position = 0;
                } else{
-                   sendSyncCurrentDataToStorage(serviceName);
+
+                   if(serviceType.equals(Protocol.EXACTLY)) {
+                       sendSyncCurrentDataToStorage(serviceType);
+                   }
 
                    newRegisterWorkerInformation.position = existWorkerInformationList.size();
                    existWorkerInformationList.add(newRegisterWorkerInformation);
@@ -155,9 +150,9 @@ public class Broker {
 
 
 
-    private void sendSyncCurrentDataToStorage(String serviceName) {
+    private void sendSyncCurrentDataToStorage(String serviceType) {
         state = BrokerConstant.WAITING_SYNC_DATA_TO_STORAGE;
-        List<WorkerInformation> workerInformationList = serviceNameToWorkerInformationList.get(serviceName);
+        List<WorkerInformation> workerInformationList = serviceTypeToWorkerInformationList.get(serviceType);
         waitSyncDataToRedisResponseFromOldWorker = new BitSet(workerInformationList.size() - 1);
 
         for(WorkerInformation workerInformation : workerInformationList) {
@@ -178,7 +173,25 @@ public class Broker {
 
     }
 
-    public class
+    public class ResendMessageTask implements Runnable {
 
+        @Override
+        public void run() {
+            checkAndResendMessage();
+        }
+    }
 
+    private void checkAndResendMessage() {
+        while(true) {
+            boolean allMessageHaveResponse
+                    = waitSyncDataToRedisResponseFromOldWorker.cardinality() == waitSyncDataToRedisResponseFromOldWorker.size();
+            if(state == BrokerConstant.WAITING_SYNC_DATA_TO_STORAGE && allMessageHaveResponse == false) {
+                for(WorkerInformation workerInformation : serviceTypeToWorkerInformationList.get(Protocol.EXACTLY.getValue())) {
+
+                }
+            } else {
+                return;
+            }
+        }
+    }
 }
