@@ -36,11 +36,11 @@ public abstract class AbstractWorkerSenderProcess extends Thread{
                 }catch (Exception e) {
                     onError();
                 }
-                try {
-                    Thread.sleep(TIME_SLEEP_WHEN_HAVE_MESSAGE);
-                } catch (InterruptedException e) {
+//                try {
+//                    Thread.sleep(TIME_SLEEP_WHEN_HAVE_MESSAGE);
+//                } catch (InterruptedException e) {
                     System.out.println(workerMessageQueue.size());
-                }
+//                }
             } else {
                 try {
                     Thread.sleep(TIME_SLEEP_WHEN_NOT_HAVE_MESSAGE);

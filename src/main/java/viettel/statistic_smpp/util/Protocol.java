@@ -4,6 +4,7 @@ import org.zeromq.ZFrame;
 
 public enum Protocol {
      CLIENT("CLIENT"), WORKER("WORKER"), BROKER("BROKER"),
+    EXACTLY("EXACTLY"), NOT_EXACTLY("NOT_EXACTLY"),
     REGISTER("REGISTER"), SYNC_DATA_TO_STORAGE("SYNC_DATA_TO_STORAGE"), REBALANCED_WORKER("REBALANCED_WORKER"),
     SYNC_DATA_TO_STORAGE_RESPONSE("SYNC_DATA_TO_STORAGE_RESPONSE"), REBALANCED_WORKER_RESPONSE("REBALANCED_WORKER_RESPONSE"),
     OK("OK"), ERROR("ERROR");
@@ -20,5 +21,9 @@ public enum Protocol {
 
     public ZFrame newFrame() {
         return new ZFrame(value);
+    }
+
+    public String getValue() {
+        return value;
     }
 }
