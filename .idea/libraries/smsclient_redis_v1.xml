@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="smsclient_redis_v1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../virtual smsc/smsclient_redis_v1/dist/smsclient_redis_v1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

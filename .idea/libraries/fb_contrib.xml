@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="fb-contrib">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../virtual smsc/smppserver_redis_v1/.sonar/findbugs/fb-contrib.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

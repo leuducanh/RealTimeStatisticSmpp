@@ -3,21 +3,22 @@ package viettel.statistic_smpp.broker;
 import org.zeromq.ZFrame;
 import org.zeromq.ZMQ;
 import org.zeromq.ZMsg;
+import viettel.statistic_smpp.broker.model.WorkerInformation;
 
 import java.util.List;
+import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 
 public abstract class AbstractWorkerSenderProcess extends Thread{
 
-    protected BlockingQueue<ZMsg> workerMessageQueue;
+    protected Queue<ZMsg> workerMessageQueue;
 
-    protected ZMQ.Socket brokerSocket;
+    protected static ZMQ.Socket brokerSocket;
 
     private static long TIME_SLEEP_WHEN_NOT_HAVE_MESSAGE = 500;
-    private static long TIME_SLEEP_WHEN_HAVE_MESSAGE = 100;
-    protected List<ZFrame> workerAddressList = null;
+    protected List<WorkerInformation> workerAddressList = null;
 
-    public AbstractWorkerSenderProcess(BlockingQueue<ZMsg> workerMessageQueue, ZMQ.Socket brokerSocket, List<ZFrame> workerAddressList) {
+    public AbstractWorkerSenderProcess(Queue<ZMsg> workerMessageQueue, ZMQ.Socket brokerSocket, List<WorkerInformation> workerAddressList) {
         this.workerMessageQueue = workerMessageQueue;
         this.brokerSocket = brokerSocket;
         this.workerAddressList = workerAddressList;
@@ -52,6 +53,8 @@ public abstract class AbstractWorkerSenderProcess extends Thread{
         }
 
     }
+
+    protected abstract void receiveResponseFromWorker(ZMsg zMsg);
 
     protected abstract void process(ZMsg message);
 

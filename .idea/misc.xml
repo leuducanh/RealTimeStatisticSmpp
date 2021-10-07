@@ -4,8 +4,17 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$USER_HOME$/Github/lib/Util/pom.xml" />
+        <option value="$PROJECT_DIR$/../../GitViettel/YuaMikami-smsc/pom.xml" />
+        <option value="$PROJECT_DIR$/../opensmpp/sim/pom.xml" />
+        <option value="$PROJECT_DIR$/../opensmpp/core/pom.xml" />
+        <option value="$PROJECT_DIR$/../../Github/lib/Util/pom.xml" />
+        <option value="$PROJECT_DIR$/../workflow/LEUJWokFlow/pom.xml" />
+        <option value="$PROJECT_DIR$/../workflow/easy-flows/pom.xml" />
       </list>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="1.8 (3)" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/../../output" />
+  </component>
 </project>

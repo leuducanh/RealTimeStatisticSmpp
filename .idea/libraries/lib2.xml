@@ -1,0 +1,46 @@
+<component name="libraryTable">
+  <library name="lib2">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../virtual smsc/smsgate/lib/mmserver-3.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../virtual smsc/smsgate/lib/httpd4j.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../virtual smsc/smsgate/lib/jep-2.4.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../virtual smsc/smsgate/lib/ojdbc7.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../virtual smsc/smsgate/lib/jaxrpc-impl.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../virtual smsc/smsgate/lib/jackson-core-2.1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../virtual smsc/smsgate/lib/jaxrpc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../virtual smsc/smsgate/lib/ftpbean.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../virtual smsc/smsgate/lib/org-openide-util.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../virtual smsc/smsgate/lib/truezip-6.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../virtual smsc/smsgate/lib/guava-17.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../virtual smsc/smsgate/lib/mail.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../virtual smsc/smsgate/lib/vsa3-vptoken-1.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../virtual smsc/smsgate/lib/jmxlog.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../virtual smsc/smsgate/lib/jackson-core-asl-1.9.9.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../virtual smsc/smsgate/lib/streambuffer.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../virtual smsc/smsgate/lib/axis.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../virtual smsc/smsgate/lib/jackson-mapper-asl-1.9.9.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../virtual smsc/smsgate/lib/jep.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../virtual smsc/smsgate/lib/aqapi.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../virtual smsc/smsgate/lib/log4j-1.2.15.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../virtual smsc/smsgate/lib/telnetd2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../virtual smsc/smsgate/lib/mysql-connector-java-5.1.6-bin.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../virtual smsc/smsgate/lib/jedis-2.8.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../virtual smsc/smsgate/lib/commons-codec-1.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../virtual smsc/smsgate/lib/commons-httpclient-3.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../virtual smsc/smsgate/lib/viettelsecurity.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../virtual smsc/smsgate/lib/commons-collections-3.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../virtual smsc/smsgate/lib/commons-discovery-0.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../virtual smsc/smsgate/lib/commons-pool-1.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../virtual smsc/smsgate/lib/commons-pool2-2.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../virtual smsc/smsgate/lib/commons-dbcp-1.2.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../virtual smsc/smsgate/lib/vsa3-vpclient-ws-1.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../virtual smsc/smsgate/lib/smartutils.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../virtual smsc/smsgate/lib/servlet.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../virtual smsc/smsgate/lib/commons-logging-1.0.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../virtual smsc/smsgate/lib/ini4j-0.5.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../virtual smsc/smsgate/lib/PropertiesUtils.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

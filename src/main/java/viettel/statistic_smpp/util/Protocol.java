@@ -5,8 +5,13 @@ import org.zeromq.ZFrame;
 public enum Protocol {
      CLIENT("CLIENT"), WORKER("WORKER"), BROKER("BROKER"),
     EXACTLY("EXACTLY"), NOT_EXACTLY("NOT_EXACTLY"),
-    REGISTER("REGISTER"), SYNC_DATA_TO_STORAGE("SYNC_DATA_TO_STORAGE"), REBALANCED_WORKER("REBALANCED_WORKER"),
-    SYNC_DATA_TO_STORAGE_RESPONSE("SYNC_DATA_TO_STORAGE_RESPONSE"), REBALANCED_WORKER_RESPONSE("REBALANCED_WORKER_RESPONSE"),
+    REQUEST("REQUEST"), HEART_BEAT("HEART_BEAT"),
+    CHECK_STATUS("CHECK_STATUS"), CHECK_STATUS_RESPONSE("CHECK_STATUS_RESPONSE"),
+    REGISTER("REGISTER"), SYNC_DATA_TO_STORAGE("SYNC_DATA_TO_STORAGE"),
+    REBALANCED_WORKER("REBALANCED_WORKER"),
+    WORKER_RESPONSE("WORKER_RESPONSE"),
+    SYNC_DATA_TO_STORAGE_RESPONSE("SYNC_DATA_TO_STORAGE_RESPONSE"),
+    REBALANCED_WORKER_RESPONSE("REBALANCED_WORKER_RESPONSE"),
     OK("OK"), ERROR("ERROR");
 
     String value;
@@ -17,6 +22,23 @@ public enum Protocol {
 
     public boolean equals(String value) {
         return this.value.equals(value);
+    }
+
+
+    public boolean equalsValue(Object object) {
+
+
+        if(object == null) return false;
+
+        if(object instanceof ZFrame) {
+            return value.equals(object.toString());
+        }
+        if(object instanceof String) {
+            return value.equals(object);
+        }
+
+
+        return false;
     }
 
     public ZFrame newFrame() {

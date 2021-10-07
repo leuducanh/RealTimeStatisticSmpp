@@ -2,20 +2,34 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="easy-flows" />
+        <module name="YuaMikami-smsc" />
         <module name="RealTimeStatisticSmpp" />
+        <module name="EasyWorkFlow" />
+        <module name="opensmpp-core" />
+        <module name="Util" />
+        <module name="opensmpp-sim" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="easy-flows" target="1.8" />
+      <module name="EasyWorkFlow" target="8" />
+      <module name="opensmpp-core" target="1.5" />
+      <module name="opensmpp-sim" target="1.5" />
       <module name="RealTimeStatisticSmpp" target="1.8" />
+      <module name="Util" target="1.8" />
+      <module name="YuaMikami-smsc" target="1.8" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="RealTimeStatisticSmpp" options="-parameters" />
+      <module name="YuaMikami-smsc" options="-parameters" />
     </option>
   </component>
 </project>

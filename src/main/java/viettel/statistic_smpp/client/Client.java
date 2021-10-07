@@ -4,14 +4,13 @@ import org.zeromq.*;
 import viettel.statistic_smpp.util.Protocol;
 
 public class Client {
-
     private String     brokerAddressString;
     private ZContext ctx;
     private ZMQ.Socket socketClient;
     private long       timeout = 2500;
     private int        retries = 3;
 
-
+    
     public Client(String brokerAddressString) {
         this.brokerAddressString = brokerAddressString;
 
@@ -39,7 +38,7 @@ public class Client {
 
 
         boolean flag = false;
-        while(true) {
+        while(!Thread.currentThread().isInterrupted()) {
             if(!flag) {
 
                 ZMsg request = new ZMsg();

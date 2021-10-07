@@ -1,0 +1,21 @@
+syntax = "proto2";
+
+package tutorial;
+
+option java_multiple_files = true;
+option java_package = "viettel.statistic_smpp.dto";
+option java_outer_classname = "Event";
+
+message Request {
+  optional Header header = 1;
+  optional Body body = 2;
+}
+
+message Header {
+  optional string requestCommand = 1;
+  optional string cpId = 2;
+}
+
+message Body {
+  repeated string payload = 1;
+}

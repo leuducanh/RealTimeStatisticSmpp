@@ -2,7 +2,16 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../workflow/LEUJWokFlow/EasyWorkFlow.iml" filepath="$PROJECT_DIR$/../workflow/LEUJWokFlow/EasyWorkFlow.iml" />
       <module fileurl="file://$PROJECT_DIR$/RealTimeStatisticSmpp.iml" filepath="$PROJECT_DIR$/RealTimeStatisticSmpp.iml" />
+      <module fileurl="file://$USER_HOME$/Github/lib/Util/Util.iml" filepath="$USER_HOME$/Github/lib/Util/Util.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../GitViettel/YuaMikami-smsc/YuaMikami-smsc.iml" filepath="$PROJECT_DIR$/../../GitViettel/YuaMikami-smsc/YuaMikami-smsc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../workflow/easy-flows/easy-flows.iml" filepath="$PROJECT_DIR$/../workflow/easy-flows/easy-flows.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../opensmpp/core/opensmpp-core.iml" filepath="$PROJECT_DIR$/../opensmpp/core/opensmpp-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../opensmpp/sim/opensmpp-sim.iml" filepath="$PROJECT_DIR$/../opensmpp/sim/opensmpp-sim.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../virtual smsc/smppserver_redis_v1/smppserver_redis_v1.iml" filepath="$PROJECT_DIR$/../../virtual smsc/smppserver_redis_v1/smppserver_redis_v1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../virtual smsc/smsclient_redis_v1/smsclient_redis_v1.iml" filepath="$PROJECT_DIR$/../../virtual smsc/smsclient_redis_v1/smsclient_redis_v1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../virtual smsc/smsgate/smsgate.iml" filepath="$PROJECT_DIR$/../../virtual smsc/smsgate/smsgate.iml" />
     </modules>
   </component>
 </project>

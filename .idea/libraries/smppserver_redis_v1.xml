@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="smppserver_redis_v1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../virtual smsc/smppserver_redis_v1/dist/smppserver_redis_v1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
